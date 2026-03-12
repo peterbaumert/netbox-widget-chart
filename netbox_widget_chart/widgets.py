@@ -46,6 +46,21 @@ DATA_SOURCES: dict[str, DataSource] = {
     "cable_color": DataSource("Cables by Color", "dcim", "Cable", "color", CABLE_COLOR_NAMES, color_from_value=True),
     "cable_status": DataSource("Cables by Status", "dcim", "Cable", "status"),
     "cable_tenant": DataSource("Cables by Tenant", "dcim", "Cable", "tenant__name"),
+    "rack_site": DataSource("Racks by Site", "dcim", "Rack", "site__name"),
+    "rack_status": DataSource("Racks by Status", "dcim", "Rack", "status"),
+    "rack_role": DataSource("Racks by Role", "dcim", "Rack", "role__name"),
+    "prefix_vrf": DataSource("Prefixes by VRF", "ipam", "Prefix", "vrf__name"),
+    "prefix_role": DataSource("Prefixes by Role", "ipam", "Prefix", "role__name"),
+    "ipaddress_role": DataSource("IP Addresses by Role", "ipam", "IPAddress", "role"),
+    "ipaddress_dns": DataSource("IP Addresses by DNS Name", "ipam", "IPAddress", "dns_name"),
+    "vlan_status": DataSource("VLANs by Status", "ipam", "VLAN", "status"),
+    "vlan_role": DataSource("VLANs by Role", "ipam", "VLAN", "role__name"),
+    "vm_platform": DataSource("VMs by Platform", "virtualization", "VirtualMachine", "platform__name"),
+    "vm_site": DataSource("VMs by Site", "virtualization", "VirtualMachine", "site__name"),
+    "tenant_group": DataSource("Tenants by Group", "tenancy", "Tenant", "group__name"),
+    "contact_role": DataSource("Contacts by Role", "tenancy", "ContactAssignment", "role__name"),
+    "powerfeed_status": DataSource("Power Feeds by Status", "dcim", "PowerFeed", "status"),
+    "powerfeed_type": DataSource("Power Feeds by Type", "dcim", "PowerFeed", "type"),
 }
 
 

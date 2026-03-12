@@ -5,7 +5,7 @@ A configurable chart dashboard widget for [NetBox](https://github.com/netbox-com
 ## Features
 
 - Pie, doughnut, bar, and polar area chart types
-- 11 built-in data sources across DCIM, virtualization, IPAM, and circuits
+- 34 built-in data sources across DCIM, virtualization, IPAM, circuits, and tenancy
 - Configurable maximum number of slices (excess grouped as "Other")
 - Powered by Chart.js (loaded lazily from CDN)
 
@@ -71,6 +71,21 @@ PLUGINS_CONFIG = {
 | `cable_color`      | Cables by Color           |
 | `cable_status`     | Cables by Status          |
 | `cable_tenant`     | Cables by Tenant          |
+| `rack_site`        | Racks by Site             |
+| `rack_status`      | Racks by Status           |
+| `rack_role`        | Racks by Role             |
+| `prefix_vrf`       | Prefixes by VRF           |
+| `prefix_role`      | Prefixes by Role          |
+| `ipaddress_role`   | IP Addresses by Role      |
+| `ipaddress_dns`    | IP Addresses by DNS Name  |
+| `vlan_status`      | VLANs by Status           |
+| `vlan_role`        | VLANs by Role             |
+| `vm_platform`      | VMs by Platform           |
+| `vm_site`          | VMs by Site               |
+| `tenant_group`     | Tenants by Group          |
+| `contact_role`     | Contacts by Role          |
+| `powerfeed_status` | Power Feeds by Status     |
+| `powerfeed_type`   | Power Feeds by Type       |
 
 ## License
 
