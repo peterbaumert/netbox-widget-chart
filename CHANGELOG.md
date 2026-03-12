@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/peterbaumert/netbox-widget-chart/compare/v0.1.3...v0.1.4) (2026-03-12)
+
+
+### Bug Fixes
+
+* cast ColorChoices labels to str to fix JSON serialization error ([7f33061](https://github.com/peterbaumert/netbox-widget-chart/commit/7f330612a47095d856d08272abcf40274f20ef5c))
+
 ## [0.1.3](https://github.com/peterbaumert/netbox-widget-chart/compare/v0.1.2...v0.1.3) (2026-03-12)
 
 
