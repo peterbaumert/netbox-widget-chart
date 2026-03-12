@@ -1,0 +1,87 @@
+name: Integration
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  integration:
+    name: NetBox Integration
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: netbox
+          POSTGRES_PASSWORD: netbox
+          POSTGRES_DB: netbox
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: netbox-widget-chart
+
+      - name: Clone NetBox
+        uses: actions/checkout@v4
+        with:
+          repository: netbox-community/netbox
+          ref: main
+          path: netbox
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install NetBox dependencies
+        working-directory: netbox
+        run: pip install -r requirements.txt
+
+      - name: Install plugin
+        working-directory: netbox-widget-chart
+        run: pip install -e .
+
+      - name: Configure NetBox
+        working-directory: netbox/netbox
+        run: |
+          cat > configuration.py << 'EOF'
+          ALLOWED_HOSTS = ['*']
+          DATABASE = {
+              'ENGINE': 'django.db.backends.postgresql',
+              'NAME': 'netbox',
+              'USER': 'netbox',
+              'PASSWORD': 'netbox',
+              'HOST': 'localhost',
+              'PORT': '5432',
+          }
+          REDIS = {
+              'tasks': {'HOST': 'localhost', 'PORT': 6379, 'DATABASE': 0, 'SSL': False},
+              'caching': {'HOST': 'localhost', 'PORT': 6379, 'DATABASE': 1, 'SSL': False},
+          }
+          SECRET_KEY = 'ci-only-secret-key-not-for-production'
+          PLUGINS = ['netbox_widget_chart']
+          DEBUG = True
+          EOF
+
+      - name: Run migrations
+        working-directory: netbox/netbox
+        run: python manage.py migrate --no-input
+
+      - name: Check plugin loads
+        working-directory: netbox/netbox
+        run: python manage.py check
