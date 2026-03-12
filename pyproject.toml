@@ -35,7 +35,7 @@ select = ["E", "F", "W", "I"]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["netbox_chart_widget*"]
+include = ["netbox_widget_chart*"]
 
 [tool.setuptools.package-data]
-netbox_chart_widget = ["templates/**/*.html"]
+netbox_widget_chart = ["templates/**/*.html"]

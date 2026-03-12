@@ -9,7 +9,11 @@ from django.db.models import Count
 from django.template.loader import render_to_string
 from extras.dashboard.utils import register_widget
 from extras.dashboard.widgets import DashboardWidget, WidgetConfigForm
-from utilities.choices import ColorChoices
+
+try:
+    from netbox.choices import ColorChoices
+except ImportError:
+    from utilities.choices import ColorChoices
 
 # Build hex → name map and chart palette from NetBox's own ColorChoices
 CABLE_COLOR_NAMES = {value: label for value, label in ColorChoices}
@@ -123,14 +127,14 @@ class ChartWidget(DashboardWidget):
         else:
             palette = (CHART_COLORS * ((len(labels) // len(CHART_COLORS)) + 1))[: len(labels)]
 
-        plugin_settings = settings.PLUGINS_CONFIG.get("netbox_chart_widget", {})
+        plugin_settings = settings.PLUGINS_CONFIG.get("netbox_widget_chart", {})
         chartjs_url = plugin_settings.get(
             "CHARTJS_URL",
             "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js",
         )
 
         return render_to_string(
-            "netbox_chart_widget/chart_widget.html",
+            "netbox_widget_chart/chart_widget.html",
             {
                 "chart_id": uuid.uuid4().hex,
                 "chart_type": chart_type,

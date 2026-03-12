@@ -25,7 +25,7 @@ Add the plugin to `PLUGINS` in your NetBox `configuration.py`:
 
 ```python
 PLUGINS = [
-    'netbox_chart_widget',
+    'netbox_widget_chart',
 ]
 ```
 
@@ -37,10 +37,10 @@ Optional settings in `configuration.py`:
 
 ```python
 PLUGINS_CONFIG = {
-    "netbox_chart_widget": {
+    "netbox_widget_chart": {
         # Chart.js source URL. Options:
         # - CDN URL (default)
-        # - Local static path e.g. "/static/netbox_chart_widget/chart.js"
+        # - Local static path e.g. "/static/netbox_widget_chart/chart.js"
         # - None to skip loading (if Chart.js is already provided globally)
         "CHARTJS_URL": "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js",
     }

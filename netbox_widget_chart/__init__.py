@@ -2,7 +2,7 @@ from netbox.plugins import PluginConfig
 
 
 class ChartWidgetConfig(PluginConfig):
-    name = "netbox_chart_widget"
+    name = "netbox_widget_chart"
     verbose_name = "NetBox Chart Widget"
     description = "A configurable pie/doughnut chart dashboard widget for NetBox"
     version = "0.1.0"

@@ -21,10 +21,10 @@ jobs:
         run: pip install black ruff
 
       - name: Black (format check)
-        run: black --check netbox_chart_widget/
+        run: black --check netbox_widget_chart/
 
       - name: Ruff (lint)
-        run: ruff check netbox_chart_widget/
+        run: ruff check netbox_widget_chart/
 
   build:
     name: Build
