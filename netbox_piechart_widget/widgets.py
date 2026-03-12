@@ -1,5 +1,6 @@
 import json
 import uuid
+from dataclasses import dataclass
 
 from django import forms
 from django.apps import apps
@@ -8,82 +9,40 @@ from django.db.models import Count
 from django.template.loader import render_to_string
 from extras.dashboard.utils import register_widget
 from extras.dashboard.widgets import DashboardWidget, WidgetConfigForm
+from utilities.choices import ColorChoices
 
-# NetBox cable color hex → human-readable name
-CABLE_COLOR_NAMES = {
-    "aa1409": "Dark Red",
-    "f44336": "Red",
-    "e91e63": "Pink",
-    "ffe4e1": "Rose",
-    "ff66ff": "Fuchsia",
-    "9c27b0": "Purple",
-    "673ab7": "Dark Purple",
-    "3f51b5": "Indigo",
-    "2196f3": "Blue",
-    "03a9f4": "Light Blue",
-    "00bcd4": "Cyan",
-    "009688": "Teal",
-    "00ffff": "Aqua",
-    "2f6a31": "Dark Green",
-    "4caf50": "Green",
-    "8bc34a": "Light Green",
-    "cddc39": "Lime",
-    "ffeb3b": "Yellow",
-    "ffc107": "Amber",
-    "ff9800": "Orange",
-    "ff5722": "Dark Orange",
-    "795548": "Brown",
-    "c0c0c0": "Light Grey",
-    "9e9e9e": "Grey",
-    "607d8b": "Dark Grey",
-    "111111": "Black",
-    "ffffff": "White",
+# Build hex → name map and chart palette from NetBox's own ColorChoices
+CABLE_COLOR_NAMES = {value: label for value, label in ColorChoices}
+CHART_COLORS = ["#" + value for value, _ in ColorChoices]
+
+
+@dataclass
+class DataSource:
+    label: str
+    app_label: str
+    model_name: str
+    group_field: str
+    label_map: dict | None = None
+    color_from_value: bool = False
+
+
+DATA_SOURCES: dict[str, DataSource] = {
+    "device_status": DataSource("Devices by Status", "dcim", "Device", "status"),
+    "device_role": DataSource("Devices by Role", "dcim", "Device", "role__name"),
+    "device_site": DataSource("Devices by Site", "dcim", "Device", "site__name"),
+    "device_platform": DataSource("Devices by Platform", "dcim", "Device", "platform__name"),
+    "device_type": DataSource("Devices by Type", "dcim", "Device", "device_type__model"),
+    "vm_status": DataSource("VMs by Status", "virtualization", "VirtualMachine", "status"),
+    "vm_cluster": DataSource("VMs by Cluster", "virtualization", "VirtualMachine", "cluster__name"),
+    "prefix_status": DataSource("Prefixes by Status", "ipam", "Prefix", "status"),
+    "ipaddress_status": DataSource("IP Addresses by Status", "ipam", "IPAddress", "status"),
+    "circuit_status": DataSource("Circuits by Status", "circuits", "Circuit", "status"),
+    "circuit_type": DataSource("Circuits by Type", "circuits", "Circuit", "type__name"),
+    "cable_type": DataSource("Cables by Type", "dcim", "Cable", "type"),
+    "cable_color": DataSource("Cables by Color", "dcim", "Cable", "color", CABLE_COLOR_NAMES, color_from_value=True),
+    "cable_status": DataSource("Cables by Status", "dcim", "Cable", "status"),
+    "cable_tenant": DataSource("Cables by Tenant", "dcim", "Cable", "tenant__name"),
 }
-
-# (label, app_label, model_name, group_by_field, label_map|None)
-# group_by_field supports Django ORM double-underscore traversal for related fields
-# label_map is an optional dict mapping raw DB values to display names
-DATA_SOURCES = {
-    "device_status": ("Devices by Status", "dcim", "Device", "status", None),
-    "device_role": ("Devices by Role", "dcim", "Device", "role__name", None),
-    "device_site": ("Devices by Site", "dcim", "Device", "site__name", None),
-    "device_platform": ("Devices by Platform", "dcim", "Device", "platform__name", None),
-    "device_type": ("Devices by Type", "dcim", "Device", "device_type__model", None),
-    "vm_status": ("VMs by Status", "virtualization", "VirtualMachine", "status", None),
-    "vm_cluster": ("VMs by Cluster", "virtualization", "VirtualMachine", "cluster__name", None),
-    "prefix_status": ("Prefixes by Status", "ipam", "Prefix", "status", None),
-    "ipaddress_status": ("IP Addresses by Status", "ipam", "IPAddress", "status", None),
-    "circuit_status": ("Circuits by Status", "circuits", "Circuit", "status", None),
-    "circuit_type": ("Circuits by Type", "circuits", "Circuit", "type__name", None),
-    "cable_type": ("Cables by Type", "dcim", "Cable", "type", None),
-    "cable_color": ("Cables by Color", "dcim", "Cable", "color", CABLE_COLOR_NAMES),
-    "cable_status": ("Cables by Status", "dcim", "Cable", "status", None),
-    "cable_tenant": ("Cables by Tenant", "dcim", "Cable", "tenant__name", None),
-}
-
-# Colour palette — cycles if there are more slices than colours
-CHART_COLORS = [
-    "#4dc9f6",
-    "#f67019",
-    "#f53794",
-    "#537bc4",
-    "#acc236",
-    "#166a8f",
-    "#00a950",
-    "#58595b",
-    "#8549ba",
-    "#e8c03b",
-    "#ff6384",
-    "#36a2eb",
-    "#ffce56",
-    "#4bc0c0",
-    "#9966ff",
-    "#ff9f40",
-    "#c9cbcf",
-    "#7fc97f",
-    "#beaed4",
-    "#fdc086",
-]
 
 
 def _format_label(value, label_map=None):
@@ -109,7 +68,7 @@ class PieChartWidget(DashboardWidget):
 
     class ConfigForm(WidgetConfigForm):
         data_source = forms.ChoiceField(
-            choices=[(k, v[0]) for k, v in DATA_SOURCES.items()],
+            choices=[(k, v.label) for k, v in DATA_SOURCES.items()],
             label="Data Source",
         )
         chart_type = forms.ChoiceField(
@@ -132,11 +91,11 @@ class PieChartWidget(DashboardWidget):
         if source_key not in DATA_SOURCES:
             return '<p class="text-danger">Invalid data source selected.</p>'
 
-        label, app_label, model_name, group_field, label_map = DATA_SOURCES[source_key]
+        source = DATA_SOURCES[source_key]
 
         try:
-            model = apps.get_model(app_label, model_name)
-            rows = list(model.objects.values(group_field).annotate(count=Count("pk")).order_by("-count"))
+            model = apps.get_model(source.app_label, source.model_name)
+            rows = list(model.objects.values(source.group_field).annotate(count=Count("pk")).order_by("-count"))
         except Exception as exc:
             return f'<p class="text-danger">Query error: {exc}</p>'
 
@@ -144,19 +103,25 @@ class PieChartWidget(DashboardWidget):
         if len(rows) > max_slices:
             top = rows[: max_slices - 1]
             other_count = sum(r["count"] for r in rows[max_slices - 1 :])
-            top.append({group_field: None, "count": other_count, "_other": True})
+            top.append({source.group_field: None, "count": other_count, "_other": True})
             rows = top
 
         labels = []
         data = []
+        raw_values = []
         for row in rows:
             if row.get("_other"):
                 labels.append("Other")
+                raw_values.append(None)
             else:
-                labels.append(_format_label(row.get(group_field), label_map))
+                raw_values.append(row.get(source.group_field))
+                labels.append(_format_label(row.get(source.group_field), source.label_map))
             data.append(row["count"])
 
-        palette = (CHART_COLORS * ((len(labels) // len(CHART_COLORS)) + 1))[: len(labels)]
+        if source.color_from_value:
+            palette = ["#" + v if v else "#aaaaaa" for v in raw_values]
+        else:
+            palette = (CHART_COLORS * ((len(labels) // len(CHART_COLORS)) + 1))[: len(labels)]
 
         plugin_settings = settings.PLUGINS_CONFIG.get("netbox_piechart_widget", {})
         chartjs_url = plugin_settings.get(
@@ -169,7 +134,7 @@ class PieChartWidget(DashboardWidget):
             {
                 "chart_id": uuid.uuid4().hex,
                 "chart_type": chart_type,
-                "chart_title": label,
+                "chart_title": source.label,
                 "chart_labels_json": json.dumps(labels),
                 "chart_data_json": json.dumps(data),
                 "chart_colors_json": json.dumps(palette),
