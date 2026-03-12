@@ -11,7 +11,9 @@ class PieChartWidgetConfig(PluginConfig):
     base_url = "piechart-widget"
     min_version = "4.0.0"
     required_settings = []
-    default_settings = {}
+    default_settings = {
+        "CHARTJS_URL": "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js",
+    }
 
     def ready(self):
         super().ready()

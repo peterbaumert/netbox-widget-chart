@@ -58,16 +58,19 @@
 
   /* Load Chart.js once per page, then initialise this instance */
   if (typeof Chart !== 'undefined') {
+    /* Already available globally (e.g. provided by NetBox or another plugin) */
     initChart();
+  {% if chartjs_url %}
   } else if (!document.getElementById('netbox-piechart-chartjs')) {
     var s = document.createElement('script');
     s.id  = 'netbox-piechart-chartjs';
-    s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+    s.src = '{{ chartjs_url }}';
     s.onload = initChart;
     document.head.appendChild(s);
   } else {
     /* Another widget is already loading the script — wait for it */
     document.getElementById('netbox-piechart-chartjs').addEventListener('load', initChart);
+  {% endif %}
   }
 }());
 </script>

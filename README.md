@@ -31,6 +31,22 @@ PLUGINS = [
 
 Restart NetBox after installing.
 
+## Configuration
+
+Optional settings in `configuration.py`:
+
+```python
+PLUGINS_CONFIG = {
+    "netbox_piechart_widget": {
+        # Chart.js source URL. Options:
+        # - CDN URL (default)
+        # - Local static path e.g. "/static/netbox_piechart_widget/chart.js"
+        # - None to skip loading (if Chart.js is already provided globally)
+        "CHARTJS_URL": "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js",
+    }
+}
+```
+
 ## Usage
 
 1. Navigate to the NetBox dashboard

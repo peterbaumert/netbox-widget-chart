@@ -3,8 +3,10 @@ import uuid
 
 from django import forms
 from django.apps import apps
+from django.conf import settings
 from django.db.models import Count
 from django.template.loader import render_to_string
+
 from extras.dashboard.utils import register_widget
 from extras.dashboard.widgets import DashboardWidget, WidgetConfigForm
 
@@ -157,6 +159,12 @@ class PieChartWidget(DashboardWidget):
 
         palette = (CHART_COLORS * ((len(labels) // len(CHART_COLORS)) + 1))[: len(labels)]
 
+        plugin_settings = settings.PLUGINS_CONFIG.get("netbox_piechart_widget", {})
+        chartjs_url = plugin_settings.get(
+            "CHARTJS_URL",
+            "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js",
+        )
+
         return render_to_string(
             "netbox_piechart_widget/piechart_widget.html",
             {
@@ -168,6 +176,7 @@ class PieChartWidget(DashboardWidget):
                 "chart_colors_json": json.dumps(palette),
                 "total": sum(data),
                 "rows": list(zip(labels, data, palette)),
+                "chartjs_url": chartjs_url,
             },
             request=request,
         )
