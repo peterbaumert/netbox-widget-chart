@@ -72,7 +72,7 @@ class ChartWidget(DashboardWidget):
             label="Data Source",
         )
         chart_type = forms.ChoiceField(
-            choices=[("pie", "Pie"), ("doughnut", "Doughnut")],
+            choices=[("pie", "Pie"), ("doughnut", "Doughnut"), ("bar", "Bar"), ("polarArea", "Polar Area")],
             label="Chart Type",
         )
         max_slices = forms.IntegerField(

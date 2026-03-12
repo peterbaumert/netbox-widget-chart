@@ -4,7 +4,7 @@ A configurable pie/doughnut chart dashboard widget for [NetBox](https://github.c
 
 ## Features
 
-- Pie and doughnut chart types
+- Pie, doughnut, bar, and polar area chart types
 - 11 built-in data sources across DCIM, virtualization, IPAM, and circuits
 - Configurable maximum number of slices (excess grouped as "Other")
 - Powered by Chart.js (loaded lazily from CDN)
@@ -77,3 +77,7 @@ PLUGINS_CONFIG = {
 ## License
 
 Apache 2.0
+
+## Development
+
+This plugin was coded entirely with [Claude](https://claude.ai) (Anthropic).
