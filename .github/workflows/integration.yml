@@ -73,7 +73,7 @@ jobs:
               'tasks': {'HOST': 'localhost', 'PORT': 6379, 'DATABASE': 0, 'SSL': False},
               'caching': {'HOST': 'localhost', 'PORT': 6379, 'DATABASE': 1, 'SSL': False},
           }
-          SECRET_KEY = 'ci-only-secret-key-not-for-production'
+          SECRET_KEY = 'ci-only-secret-key-not-for-production-must-be-at-least-50-chars'
           PLUGINS = ['netbox_widget_chart']
           DEBUG = True
           EOF
