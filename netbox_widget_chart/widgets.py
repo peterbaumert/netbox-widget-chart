@@ -76,7 +76,13 @@ class ChartWidget(DashboardWidget):
             label="Data Source",
         )
         chart_type = forms.ChoiceField(
-            choices=[("pie", "Pie"), ("doughnut", "Doughnut"), ("bar", "Bar"), ("polarArea", "Polar Area")],
+            choices=[
+                ("pie", "Pie"),
+                ("doughnut", "Doughnut"),
+                ("bar", "Bar (Vertical)"),
+                ("bar_horizontal", "Bar (Horizontal)"),
+                ("polarArea", "Polar Area"),
+            ],
             label="Chart Type",
         )
         max_slices = forms.IntegerField(
@@ -136,11 +142,15 @@ class ChartWidget(DashboardWidget):
             "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js",
         )
 
+        horizontal = chart_type == "bar_horizontal"
+        js_chart_type = "bar" if horizontal else chart_type
+
         return render_to_string(
             "netbox_widget_chart/chart_widget.html",
             {
                 "chart_id": uuid.uuid4().hex,
-                "chart_type": chart_type,
+                "chart_type": js_chart_type,
+                "horizontal": json.dumps(horizontal),
                 "chart_title": source.label,
                 "chart_labels_json": json.dumps(labels),
                 "chart_data_json": json.dumps(data),

@@ -9,11 +9,12 @@
 (function () {
   'use strict';
 
-  var chartId   = 'chart-{{ chart_id }}';
-  var chartType = '{{ chart_type }}';
-  var labels    = {{ chart_labels_json|safe }};
-  var data      = {{ chart_data_json|safe }};
-  var colors    = {{ chart_colors_json|safe }};
+  var chartId    = 'chart-{{ chart_id }}';
+  var chartType  = '{{ chart_type }}';
+  var horizontal = {{ horizontal }};
+  var labels     = {{ chart_labels_json|safe }};
+  var data       = {{ chart_data_json|safe }};
+  var colors     = {{ chart_colors_json|safe }};
 
   function initChart() {
     var canvas = document.getElementById(chartId);
@@ -33,6 +34,7 @@
       options: {
         responsive: true,
         maintainAspectRatio: true,
+        indexAxis: horizontal ? 'y' : 'x',
         plugins: {
           legend: {
             display: chartType !== 'bar',
@@ -46,7 +48,7 @@
           tooltip: {
             callbacks: {
               label: function (ctx) {
-                var val   = chartType === 'bar' ? ctx.parsed.y : chartType === 'polarArea' ? ctx.parsed.r : ctx.parsed;
+                var val   = chartType === 'bar' ? (horizontal ? ctx.parsed.x : ctx.parsed.y) : chartType === 'polarArea' ? ctx.parsed.r : ctx.parsed;
                 var total = ctx.dataset.data.reduce(function (a, b) { return a + b; }, 0);
                 var pct   = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
                 return ' ' + ctx.label + ': ' + val + ' (' + pct + '%)';
