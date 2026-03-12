@@ -1,6 +1,6 @@
 # netbox-widget-chart
 
-A configurable pie/doughnut chart dashboard widget for [NetBox](https://github.com/netbox-community/netbox).
+A configurable chart dashboard widget for [NetBox](https://github.com/netbox-community/netbox).
 
 ## Features
 
