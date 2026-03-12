@@ -7,6 +7,19 @@ categories:
     labels: ["bug", "fix"]
   - title: "Maintenance"
     labels: ["chore", "dependencies", "refactor"]
+  - title: "Other Changes"
+    collapse-after: 5
+
+autolabeler:
+  - label: "feature"
+    commit-message:
+      - '/^feat/i'
+  - label: "fix"
+    commit-message:
+      - '/^fix/i'
+  - label: "chore"
+    commit-message:
+      - '/^chore|refactor|docs|style|test|ci|rename|add|update/i'
 change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
 commit-template: "- $TITLE @$AUTHOR ($SHA)"
 include-commits: true
