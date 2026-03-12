@@ -5,7 +5,6 @@ from django import forms
 from django.apps import apps
 from django.db.models import Count
 from django.template.loader import render_to_string
-
 from extras.dashboard.utils import register_widget
 from extras.dashboard.widgets import DashboardWidget, WidgetConfigForm
 
