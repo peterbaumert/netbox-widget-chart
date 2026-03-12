@@ -57,7 +57,7 @@ jobs:
         run: pip install -e .
 
       - name: Configure NetBox
-        working-directory: netbox/netbox
+        working-directory: netbox/netbox/netbox
         run: |
           cat > configuration.py << 'EOF'
           ALLOWED_HOSTS = ['*']
