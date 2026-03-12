@@ -55,8 +55,8 @@ def _format_label(value, label_map=None):
 
 
 @register_widget
-class PieChartWidget(DashboardWidget):
-    default_title = "Pie Chart"
+class ChartWidget(DashboardWidget):
+    default_title = "Chart"
     description = "Display object counts as a pie or doughnut chart, grouped by a selected field"
     default_config = {
         "data_source": "device_status",
@@ -123,14 +123,14 @@ class PieChartWidget(DashboardWidget):
         else:
             palette = (CHART_COLORS * ((len(labels) // len(CHART_COLORS)) + 1))[: len(labels)]
 
-        plugin_settings = settings.PLUGINS_CONFIG.get("netbox_piechart_widget", {})
+        plugin_settings = settings.PLUGINS_CONFIG.get("netbox_chart_widget", {})
         chartjs_url = plugin_settings.get(
             "CHARTJS_URL",
             "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js",
         )
 
         return render_to_string(
-            "netbox_piechart_widget/piechart_widget.html",
+            "netbox_chart_widget/chart_widget.html",
             {
                 "chart_id": uuid.uuid4().hex,
                 "chart_type": chart_type,

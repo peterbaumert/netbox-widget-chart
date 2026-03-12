@@ -1,5 +1,5 @@
-<div class="piechart-widget" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-  <canvas id="piechart-{{ chart_id }}" style="max-height: 260px; max-width: 100%;"></canvas>
+<div class="chart-widget" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+  <canvas id="chart-{{ chart_id }}" style="max-height: 260px; max-width: 100%;"></canvas>
   <p class="text-muted text-center mt-2 mb-1" style="font-size: 0.85em;">
     Total: <strong>{{ total }}</strong>
   </p>
@@ -9,7 +9,7 @@
 (function () {
   'use strict';
 
-  var chartId   = 'piechart-{{ chart_id }}';
+  var chartId   = 'chart-{{ chart_id }}';
   var chartType = '{{ chart_type }}';
   var labels    = {{ chart_labels_json|safe }};
   var data      = {{ chart_data_json|safe }};
@@ -61,15 +61,15 @@
     /* Already available globally (e.g. provided by NetBox or another plugin) */
     initChart();
   {% if chartjs_url %}
-  } else if (!document.getElementById('netbox-piechart-chartjs')) {
+  } else if (!document.getElementById('netbox-chartjs')) {
     var s = document.createElement('script');
-    s.id  = 'netbox-piechart-chartjs';
+    s.id  = 'netbox-chartjs';
     s.src = '{{ chartjs_url }}';
     s.onload = initChart;
     document.head.appendChild(s);
   } else {
     /* Another widget is already loading the script — wait for it */
-    document.getElementById('netbox-piechart-chartjs').addEventListener('load', initChart);
+    document.getElementById('netbox-chartjs').addEventListener('load', initChart);
   {% endif %}
   }
 }());

@@ -1,4 +1,4 @@
-# netbox-widget-piechart
+# netbox-widget-chart
 
 A configurable pie/doughnut chart dashboard widget for [NetBox](https://github.com/netbox-community/netbox).
 
@@ -18,14 +18,14 @@ A configurable pie/doughnut chart dashboard widget for [NetBox](https://github.c
 ## Installation
 
 ```bash
-pip install netbox-widget-piechart
+pip install netbox-widget-chart
 ```
 
 Add the plugin to `PLUGINS` in your NetBox `configuration.py`:
 
 ```python
 PLUGINS = [
-    'netbox_piechart_widget',
+    'netbox_chart_widget',
 ]
 ```
 
@@ -37,10 +37,10 @@ Optional settings in `configuration.py`:
 
 ```python
 PLUGINS_CONFIG = {
-    "netbox_piechart_widget": {
+    "netbox_chart_widget": {
         # Chart.js source URL. Options:
         # - CDN URL (default)
-        # - Local static path e.g. "/static/netbox_piechart_widget/chart.js"
+        # - Local static path e.g. "/static/netbox_chart_widget/chart.js"
         # - None to skip loading (if Chart.js is already provided globally)
         "CHARTJS_URL": "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js",
     }
@@ -51,7 +51,7 @@ PLUGINS_CONFIG = {
 
 1. Navigate to the NetBox dashboard
 2. Click **Add Widget**
-3. Select **Pie Chart**
+3. Select **Chart**
 4. Configure the data source, chart type, and max slices
 
 ## Available Data Sources

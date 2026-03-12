@@ -1,14 +1,14 @@
 from netbox.plugins import PluginConfig
 
 
-class PieChartWidgetConfig(PluginConfig):
-    name = "netbox_piechart_widget"
-    verbose_name = "NetBox Pie Chart Widget"
+class ChartWidgetConfig(PluginConfig):
+    name = "netbox_chart_widget"
+    verbose_name = "NetBox Chart Widget"
     description = "A configurable pie/doughnut chart dashboard widget for NetBox"
     version = "0.1.0"
     author = "Pete"
     author_email = ""
-    base_url = "piechart-widget"
+    base_url = "chart-widget"
     min_version = "4.0.0"
     required_settings = []
     default_settings = {
@@ -20,4 +20,4 @@ class PieChartWidgetConfig(PluginConfig):
         from . import widgets  # noqa: F401 — triggers widget registration
 
 
-config = PieChartWidgetConfig
+config = ChartWidgetConfig

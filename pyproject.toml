@@ -3,7 +3,7 @@ requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "netbox-widget-piechart"
+name = "netbox-widget-chart"
 version = "0.1.0"
 description = "A configurable pie/doughnut chart dashboard widget for NetBox"
 readme = "README.md"
@@ -35,7 +35,7 @@ select = ["E", "F", "W", "I"]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["netbox_piechart_widget*"]
+include = ["netbox_chart_widget*"]
 
 [tool.setuptools.package-data]
-netbox_piechart_widget = ["templates/**/*.html"]
+netbox_chart_widget = ["templates/**/*.html"]
