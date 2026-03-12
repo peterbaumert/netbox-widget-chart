@@ -28,39 +28,57 @@ class DataSource:
     group_field: str
     label_map: dict | None = None
     color_from_value: bool = False
+    list_url: str | None = None  # e.g. "/dcim/devices/"
+    filter_param: str | None = None  # e.g. "status"
 
+
+def _ds(label, app, model, field, lmap=None, color_from=False, url=None, param=None):
+    return DataSource(label, app, model, field, lmap, color_from, url, param)
+
+
+_VMS = "/virtualization/virtual-machines/"
 
 DATA_SOURCES: dict[str, DataSource] = {
-    "device_status": DataSource("Devices by Status", "dcim", "Device", "status"),
-    "device_role": DataSource("Devices by Role", "dcim", "Device", "role__name"),
-    "device_site": DataSource("Devices by Site", "dcim", "Device", "site__name"),
-    "device_platform": DataSource("Devices by Platform", "dcim", "Device", "platform__name"),
-    "device_type": DataSource("Devices by Type", "dcim", "Device", "device_type__model"),
-    "vm_status": DataSource("VMs by Status", "virtualization", "VirtualMachine", "status"),
-    "vm_cluster": DataSource("VMs by Cluster", "virtualization", "VirtualMachine", "cluster__name"),
-    "prefix_status": DataSource("Prefixes by Status", "ipam", "Prefix", "status"),
-    "ipaddress_status": DataSource("IP Addresses by Status", "ipam", "IPAddress", "status"),
-    "circuit_status": DataSource("Circuits by Status", "circuits", "Circuit", "status"),
-    "circuit_type": DataSource("Circuits by Type", "circuits", "Circuit", "type__name"),
-    "cable_type": DataSource("Cables by Type", "dcim", "Cable", "type"),
-    "cable_color": DataSource("Cables by Color", "dcim", "Cable", "color", CABLE_COLOR_NAMES, color_from_value=True),
-    "cable_status": DataSource("Cables by Status", "dcim", "Cable", "status"),
-    "cable_tenant": DataSource("Cables by Tenant", "dcim", "Cable", "tenant__name"),
-    "rack_site": DataSource("Racks by Site", "dcim", "Rack", "site__name"),
-    "rack_status": DataSource("Racks by Status", "dcim", "Rack", "status"),
-    "rack_role": DataSource("Racks by Role", "dcim", "Rack", "role__name"),
-    "prefix_vrf": DataSource("Prefixes by VRF", "ipam", "Prefix", "vrf__name"),
-    "prefix_role": DataSource("Prefixes by Role", "ipam", "Prefix", "role__name"),
-    "ipaddress_role": DataSource("IP Addresses by Role", "ipam", "IPAddress", "role"),
-    "ipaddress_dns": DataSource("IP Addresses by DNS Name", "ipam", "IPAddress", "dns_name"),
-    "vlan_status": DataSource("VLANs by Status", "ipam", "VLAN", "status"),
-    "vlan_role": DataSource("VLANs by Role", "ipam", "VLAN", "role__name"),
-    "vm_platform": DataSource("VMs by Platform", "virtualization", "VirtualMachine", "platform__name"),
-    "vm_site": DataSource("VMs by Site", "virtualization", "VirtualMachine", "site__name"),
-    "tenant_group": DataSource("Tenants by Group", "tenancy", "Tenant", "group__name"),
-    "contact_role": DataSource("Contacts by Role", "tenancy", "ContactAssignment", "role__name"),
-    "powerfeed_status": DataSource("Power Feeds by Status", "dcim", "PowerFeed", "status"),
-    "powerfeed_type": DataSource("Power Feeds by Type", "dcim", "PowerFeed", "type"),
+    # Devices
+    "device_status": _ds("Devices by Status", "dcim", "Device", "status", url="/dcim/devices/", param="status"),
+    "device_role": _ds("Devices by Role", "dcim", "Device", "role__name", url="/dcim/devices/", param="role"),
+    "device_site": _ds("Devices by Site", "dcim", "Device", "site__name", url="/dcim/devices/", param="site"),
+    "device_platform": _ds("Devices by Platform", "dcim", "Device", "platform__name", url="/dcim/devices/", param="platform"),
+    "device_type": _ds("Devices by Type", "dcim", "Device", "device_type__model", url="/dcim/devices/", param="device_type"),
+    # Virtual Machines
+    "vm_status": _ds("VMs by Status", "virtualization", "VirtualMachine", "status", url=_VMS, param="status"),
+    "vm_cluster": _ds("VMs by Cluster", "virtualization", "VirtualMachine", "cluster__name", url=_VMS, param="cluster"),
+    "vm_platform": _ds("VMs by Platform", "virtualization", "VirtualMachine", "platform__name", url=_VMS, param="platform"),
+    "vm_site": _ds("VMs by Site", "virtualization", "VirtualMachine", "site__name", url=_VMS, param="site"),
+    # Prefixes
+    "prefix_status": _ds("Prefixes by Status", "ipam", "Prefix", "status", url="/ipam/prefixes/", param="status"),
+    "prefix_vrf": _ds("Prefixes by VRF", "ipam", "Prefix", "vrf__name", url="/ipam/prefixes/", param="vrf"),
+    "prefix_role": _ds("Prefixes by Role", "ipam", "Prefix", "role__name", url="/ipam/prefixes/", param="role"),
+    # IP Addresses
+    "ipaddress_status": _ds("IP Addresses by Status", "ipam", "IPAddress", "status", url="/ipam/ip-addresses/", param="status"),
+    "ipaddress_role": _ds("IP Addresses by Role", "ipam", "IPAddress", "role", url="/ipam/ip-addresses/", param="role"),
+    "ipaddress_dns": _ds("IP Addresses by DNS Name", "ipam", "IPAddress", "dns_name", url="/ipam/ip-addresses/", param="dns_name"),
+    # VLANs
+    "vlan_status": _ds("VLANs by Status", "ipam", "VLAN", "status", url="/ipam/vlans/", param="status"),
+    "vlan_role": _ds("VLANs by Role", "ipam", "VLAN", "role__name", url="/ipam/vlans/", param="role"),
+    # Circuits
+    "circuit_status": _ds("Circuits by Status", "circuits", "Circuit", "status", url="/circuits/circuits/", param="status"),
+    "circuit_type": _ds("Circuits by Type", "circuits", "Circuit", "type__name", url="/circuits/circuits/", param="type"),
+    # Cables
+    "cable_type": _ds("Cables by Type", "dcim", "Cable", "type", url="/dcim/cables/", param="type"),
+    "cable_color": _ds("Cables by Color", "dcim", "Cable", "color", CABLE_COLOR_NAMES, True, url="/dcim/cables/", param="color"),
+    "cable_status": _ds("Cables by Status", "dcim", "Cable", "status", url="/dcim/cables/", param="status"),
+    "cable_tenant": _ds("Cables by Tenant", "dcim", "Cable", "tenant__name", url="/dcim/cables/", param="tenant"),
+    # Racks
+    "rack_site": _ds("Racks by Site", "dcim", "Rack", "site__name", url="/dcim/racks/", param="site"),
+    "rack_status": _ds("Racks by Status", "dcim", "Rack", "status", url="/dcim/racks/", param="status"),
+    "rack_role": _ds("Racks by Role", "dcim", "Rack", "role__name", url="/dcim/racks/", param="role"),
+    # Tenancy
+    "tenant_group": _ds("Tenants by Group", "tenancy", "Tenant", "group__name", url="/tenancy/tenants/", param="group"),
+    "contact_role": _ds("Contacts by Role", "tenancy", "ContactAssignment", "role__name"),
+    # Power
+    "powerfeed_status": _ds("Power Feeds by Status", "dcim", "PowerFeed", "status", url="/dcim/power-feeds/", param="status"),
+    "powerfeed_type": _ds("Power Feeds by Type", "dcim", "PowerFeed", "type", url="/dcim/power-feeds/", param="type"),
 }
 
 
@@ -160,6 +178,18 @@ class ChartWidget(DashboardWidget):
         horizontal = chart_type == "bar_horizontal"
         js_chart_type = "bar" if horizontal else chart_type
 
+        # Build per-slice filter URLs if the source supports it
+        slice_urls = []
+        for i, row in enumerate(rows):
+            if source.list_url and source.filter_param and not row.get("_other"):
+                raw = raw_values[i]
+                if raw is not None:
+                    slice_urls.append(f"{source.list_url}?{source.filter_param}={raw}")
+                else:
+                    slice_urls.append(None)
+            else:
+                slice_urls.append(None)
+
         return render_to_string(
             "netbox_widget_chart/chart_widget.html",
             {
@@ -170,6 +200,7 @@ class ChartWidget(DashboardWidget):
                 "chart_labels_json": json.dumps(labels),
                 "chart_data_json": json.dumps(data),
                 "chart_colors_json": json.dumps(palette),
+                "slice_urls_json": json.dumps(slice_urls),
                 "total": sum(data),
                 "rows": list(zip(labels, data, palette)),
                 "chartjs_url": chartjs_url,
