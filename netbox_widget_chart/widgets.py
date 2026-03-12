@@ -103,6 +103,9 @@ class ChartWidget(DashboardWidget):
         except Exception as exc:
             return f'<p class="text-danger">Query error: {exc}</p>'
 
+        if not rows:
+            return '<p class="text-muted text-center my-4">No data available for this source.</p>'
+
         # Merge tail rows into "Other" when result set exceeds max_slices
         if len(rows) > max_slices:
             top = rows[: max_slices - 1]
