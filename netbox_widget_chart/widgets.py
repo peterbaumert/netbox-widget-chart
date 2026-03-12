@@ -16,7 +16,7 @@ except ImportError:
     from utilities.choices import ColorChoices
 
 # Build hex → name map and chart palette from NetBox's own ColorChoices
-CABLE_COLOR_NAMES = {value: label for value, label in ColorChoices}
+CABLE_COLOR_NAMES = {value: str(label) for value, label in ColorChoices}
 CHART_COLORS = ["#" + value for value, _ in ColorChoices]
 
 
