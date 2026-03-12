@@ -11,9 +11,7 @@ A configurable chart dashboard widget for [NetBox](https://github.com/netbox-com
 
 ## Compatibility
 
-| Plugin Version | NetBox Version |
-|----------------|----------------|
-| 0.1.0          | 4.5            |
+See [COMPATIBILITY.md](COMPATIBILITY.md).
 
 ## Installation
 
