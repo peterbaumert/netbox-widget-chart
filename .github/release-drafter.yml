@@ -9,6 +9,7 @@ categories:
     labels: ["chore", "dependencies", "refactor"]
 change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
 commit-template: "- $TITLE @$AUTHOR ($SHA)"
+include-commits: true
 include-pre-releases: false
 version-resolver:
   major:
