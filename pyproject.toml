@@ -20,7 +20,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-dev = ["black", "ruff", "build"]
+dev = ["black", "ruff", "build", "pytest", "pytest-mock"]
 
 [tool.black]
 line-length = 140
@@ -32,6 +32,9 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [tool.setuptools.packages.find]
 where = ["."]

@@ -1,4 +1,4 @@
-.PHONY: fix lint
+.PHONY: fix lint test
 
 fix:
 	.venv/bin/ruff check --fix netbox_widget_chart/
@@ -7,3 +7,6 @@ fix:
 lint:
 	.venv/bin/ruff check netbox_widget_chart/
 	.venv/bin/black --check netbox_widget_chart/
+
+test:
+	.venv/bin/pytest tests/ -v
