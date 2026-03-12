@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "netbox-widget-piechart"
+version = "0.1.0"
+description = "A configurable pie/doughnut chart dashboard widget for NetBox"
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+    { name = "peterbaumert" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Framework :: Django",
+    "Topic :: System :: Networking",
+]
+
+[project.optional-dependencies]
+dev = ["black", "ruff", "build"]
+
+[tool.black]
+line-length = 120
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["netbox_piechart_widget*"]
+
+[tool.setuptools.package-data]
+netbox_piechart_widget = ["templates/**/*.html"]
